@@ -1,0 +1,6 @@
+{
+  "cleanup.is_paired": true,
+  "cleanup.destination": "/data/newton/dante_n2/",
+  "cleanup.reads":  ["/data/newton/dante_n2/29555163183_sorted_1.fq",  "/data/newton/dante_n2/29555163183_sorted_2.fq"],
+  "cleanup.threads": 15
+}

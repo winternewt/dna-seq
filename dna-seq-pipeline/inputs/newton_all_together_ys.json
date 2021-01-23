@@ -1,0 +1,13 @@
+{
+  "dna_seq_pipeline.reference": "/data/gwas/homo_sapiens_ensembl_102/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+  "dna_seq_pipeline.reference_fai": "/data/gwas/homo_sapiens_ensembl_102/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+  "dna_seq_pipeline.reads": ["/data/newton/yseq/12382_bwa-mem_hg38_sorted_1.fastq",  "/data/newton/yseq/12382_bwa-mem_hg38_sorted_2.fastq"],
+  "dna_seq_pipeline.destination": "/data/newton",
+  "dna_seq_pipeline.name": "newtonwinter_12382_bwa_ys",
+  "dna_seq_pipeline.sort_threads": 14,
+  "dna_seq_pipeline.align_threads": 14,
+  "dna_seq_pipeline.variant_calling_threads": 14,
+  "dna_seq_pipeline.coverage_sampling": 10000,
+  "dna_seq_pipeline.max_memory_gb": 48,
+  "dna_seq_pipeline.quality": ""
+}

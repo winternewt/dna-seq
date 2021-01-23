@@ -1,0 +1,10 @@
+{
+  "alignment.reference":  "/data/gwas/homo_sapiens_ensembl_102/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+  "alignment.reads": ["/data/newton/fastq/cleaned/29555163183_sorted_1.fq_cleaned.fastq.gz",  "/data/newton/fastq/cleaned/29555163183_sorted_2.fq_cleaned.fastq.gz"],
+  "alignment.destination": "/data/newton",
+  "alignment.name": "newtonwinter.n2",
+  "alignment.sort_threads": 14,
+  "alignment.align_threads": 14,
+  "alignment.coverage_sampling": 10000,
+  "alignment.max_memory_gb": 48
+}

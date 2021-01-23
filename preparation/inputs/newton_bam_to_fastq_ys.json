@@ -1,0 +1,5 @@
+{
+  "bam_to_fastq.bam": "/data/yseq/12382_bwa-mem_hg38_sorted.bam",
+  "bam_to_fastq.destination": "/data/newton/yseq/fastq",
+  "bam_to_fastq.threads": "16"
+}

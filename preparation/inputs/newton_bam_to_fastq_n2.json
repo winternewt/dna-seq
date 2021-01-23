@@ -1,0 +1,5 @@
+{
+  "bam_to_fastq.bam": "/data/dante/N2/29555163183.bam",
+  "bam_to_fastq.destination": "/data/newton/dante_n2/29555163183",
+  "bam_to_fastq.threads": "16"
+}
