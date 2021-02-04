@@ -60,7 +60,7 @@ task vep {
     input {
         File vcf
         File? vcf_tbi
-        String name = "variant_effect_output.tsv"
+        String name #= "variant_effect_output.tsv"
         String species 
         Int threads
         Boolean database
