@@ -1,0 +1,11 @@
+{
+  "simple_variant_calling.referenceFasta": "/data/ensembl/102/species/homo_sapiens/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+  "simple_variant_calling.referenceFai": "/data/ensembl/102/species/homo_sapiens/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+  "simple_variant_calling.bam": "/data/newton/dante_n1/aligned/newtonwinter_17956280493.bam",
+  "simple_variant_calling.bai": "/data/newton/dante_n1/aligned/newtonwinter_17956280493.bam.bai",
+  "simple_variant_calling.name": "newtonwinter_17956280493",
+  "simple_variant_calling.destination": "/data/newton/dante_n1/variants",
+  "simple_variant_calling.threads": 14,
+  "simple_variant_calling.max_memory": 48
+}
+
