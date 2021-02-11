@@ -5,13 +5,23 @@ if ! [ $(id -u) = 0 ]; then
 fi
 apt-get update
 #transport
-apt-get install rsync tree
+apt-get install rsync tree snap libarchive-tools
 #code 
 apt-get install gdb openjdk-8-jre-headless openjdk-8-jdk gnutls-bin
 #libs
-apt-get install libncurses-dev libbz2-dev liblzma-dev libcurl4-openssl-dev libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-dev libmpfr-dev
+apt-get install libncurses-dev libbz2-dev liblzma-dev libcurl4-openssl-dev libidn11-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev libssl-dev libmpfr-dev libpng-dev uuid-dev
 #genetic
-apt-get install bwa samtools bcftools
+apt-get install bwa samtools bcftools bioperl 
+
+if ! [ -d "/data/sources/kent" ]; then
+	mkdir -p /data/sources/
+	pip3 install git+https://github.com/PyMySQL/mysqlclient-python.git
+	wget -qO- --timestamping http://hgdownload.soe.ucsc.edu/admin/jksrc.zip | bsdtar -xvf- -C /data/sources/
+	cd /data/sources/kent/src/lib
+	make all
+	cd -
+fi
+
 
 if ! [ -f "/usr/local/bin/samtools" ]; then
 	mkdir -p /data/sources/samtools
