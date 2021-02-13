@@ -59,7 +59,6 @@ workflow vep_annotations{
 task vep {
     input {
         File vcf
-        File? vcf_gz
         String name #= "variant_effect_output.tsv"
         String species
         String db_host 
