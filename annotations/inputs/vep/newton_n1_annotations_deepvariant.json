@@ -1,7 +1,7 @@
 {
-  "vep_annotations.destination": "/data/newton/dante_n2/vep/deepvariant",
-  "vep_annotations.vcf": "/data/newton/dante_n2/variants/deepvariant/newtonwinter_29555163183.vcf.gz",
-  "vep_annotations.name": "newtonwinter_29555163183",
+  "vep_annotations.destination": "/data/newton/dante_n1/vep/deepvariant",
+  "vep_annotations.vcf": "/data/newton/dante_n1/variants/deepvariant/newtonwinter_17956280493.vcf",
+  "vep_annotations.name": "newtonwinter_17956280493",
   "vep_annotations.ensembl_cache": "/data/ensembl/102/cache",
   "vep_annotations.ensembl_plugins": "/data/ensembl/102/plugins",
   "vep_annotations.species": "homo_sapiens",
