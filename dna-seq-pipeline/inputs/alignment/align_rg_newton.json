@@ -1,0 +1,17 @@
+{
+  "alignment.reference":  "/data/gwas/homo_sapiens_ensembl_102/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+  "alignment.reads": ["/data/newton/dante_n1/fastq/cleaned/17956280493_sorted_1.fq_cleaned.fastq.gz",  "/data/newton/dante_n1/fastq/cleaned/17956280493_sorted_1.fq_cleaned.fastq.gz"],
+  "alignment.destination": "/data/newton/dante_n1t/",
+  "alignment.name": "newtonwinter_17956280493",
+  "alignment.rg_use_source" : false,
+  "alignment.rg_source" : "/data/newton/dante_n1/aligned/17956280493.bam",
+  "alignment.ID": "17956280493",
+  "alignment.LB": "LB-17956280493",
+  "alignment.PL": "ILLUMINA",
+  "alignment.PU": "HHCNLCFXX",
+  "alignment.SM": "newtonwinter",
+  "alignment.sort_threads": 14,
+  "alignment.align_threads": 14,
+  "alignment.coverage_sampling": 10000,
+  "alignment.max_memory_gb": 48
+}
