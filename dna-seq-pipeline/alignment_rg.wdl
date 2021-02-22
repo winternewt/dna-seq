@@ -1,6 +1,7 @@
 version development
 
 workflow alignment {
+   
     input {
         Array[File]+ reads
         File reference
@@ -13,6 +14,8 @@ workflow alignment {
         String PL        
         String PU        
         String SM         
+        Boolean use_gencore
+        Int compression# = 9
         Int align_threads# = 12
         Int sort_threads# = 12
         Int max_memory_gb# = 36
@@ -42,42 +45,58 @@ workflow alignment {
             max_memory = max_memory_gb
     }
 
-    call sambamba_sort {
-        input:
-            unsorted_bam = minimap2.bam,
-            threads = sort_threads,
-            max_memory = max_memory_gb
+    if (!use_gencore) {
+        call sambamba_markdup {
+            input:
+                unsorted_bam = minimap2.bam,
+                threads = sort_threads,
+                compression = compression,
+                max_memory = max_memory_gb
+        }
+
     }
 
-    call gencore{
-        input:
-            reference = reference,
-            sorted_bam = sambamba_sort.bam,
-            name = name,
-            quality = gencore_quality,
-            coverage_sampling = coverage_sampling,
-            max_memory = max_memory_gb
-    }
+    if (use_gencore) {
+        call sambamba_sort {
+            input:
+                unsorted_bam = minimap2.bam,
+                threads = sort_threads,
+                compression = 1,
+                max_memory = max_memory_gb
+        }
 
-    call sambamba_sort as sambamba_sort_output {  #indexing fails due to gencore "WARNING: The output will be unordered!"
-        input:
-            unsorted_bam = gencore.bam,
-            threads = sort_threads,
-            max_memory = max_memory_gb
+        call gencore{
+            input:
+                reference = reference,
+                sorted_bam = sambamba_sort.bam,
+                name = name,
+                quality = gencore_quality,
+                coverage_sampling = coverage_sampling,
+                max_memory = max_memory_gb
+        }
+
+        call sambamba_sort as sambamba_sort_output {  #indexing fails due to gencore "WARNING: The output will be unordered!"
+            input:
+                unsorted_bam = gencore.bam,
+                threads = sort_threads,
+                compression = compression,
+                max_memory = max_memory_gb
+        }
     }
     
+   
     call copy as copy_alignment {
         input:
             destination = destination,
-            files = [sambamba_sort_output.bam, sambamba_sort_output.bai, gencore.html, gencore.json]
+            files = if (use_gencore) then [sambamba_sort_output.bam, sambamba_sort_output.bai, gencore.html, gencore.json] else [sambamba_markdup.bam, sambamba_markdup.bai, sambamba_markdup.flagstat]
+            
     }
 
 
     output {
        File bam =  copy_alignment.out[0]
        File bai = copy_alignment.out[1]
-       File html = copy_alignment.out[2]
-       File json = copy_alignment.out[3]
+       Array[File?] all = copy_alignment.out
     }
 }
 
@@ -138,6 +157,38 @@ task minimap2 {
     }
 }
 
+task sambamba_markdup {
+    input {
+        File unsorted_bam
+        Int threads
+        Int max_memory
+        Int compression
+        Int gb_per_thread = 3
+    }
+
+    String name = basename(unsorted_bam, ".bam")
+
+    command {
+       ln -s ~{unsorted_bam} ~{name + ".unsorted.bam"}
+       sambamba markdup -t ~{threads} -p ~{name + ".unsorted.bam"} ~{basename(unsorted_bam)}
+       sambamba sort -m ~{gb_per_thread}G -t ~{threads} -l ~{compression} -p ~{basename(unsorted_bam)}
+       sambamba flagstat -t ~{threads} -p ~{name + ".sorted.bam"} > ~{name + ".sorted.bam.flagstat"}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/sambamba@sha256:ae92faef4c53a632b2120dfffa7b6dcfe5366a0647e61bbbd6188aedc89da4e8" #:0.8.0--h984e79f_0
+        maxRetries: 1
+        docker_memory: "~{max_memory}G"
+        docker_cpu: "~{threads+1}"
+        docker_swap: "~{gb_per_thread * (threads+1) * 2}G"
+      }
+
+    output {
+      File bam = name + ".sorted.bam"
+      File bai = name + ".sorted.bam.bai"
+      File flagstat = name + ".sorted.bam.flagstat"
+    }
+}
 
 
 task sambamba_sort{
@@ -145,6 +196,7 @@ task sambamba_sort{
         File unsorted_bam
         Int threads
         Int max_memory
+        Int compression
         Int gb_per_thread = 3
     }
 
@@ -152,7 +204,7 @@ task sambamba_sort{
 
     command {
        ln -s ~{unsorted_bam} ~{basename(unsorted_bam)}
-       sambamba sort -m ~{gb_per_thread}G -t ~{threads} -p ~{basename(unsorted_bam)}
+       sambamba sort -m ~{gb_per_thread}G -t ~{threads} -l ~{compression} -p ~{basename(unsorted_bam)}
     }
 
     runtime {
@@ -168,6 +220,8 @@ task sambamba_sort{
       File bai = name + ".sorted.bam.bai"
     }
 }
+
+
 
 
 task gencore {
@@ -200,7 +254,7 @@ task gencore {
 
 task copy {
     input {
-        Array[File] files
+        Array[File?] files
         String destination
     }
 
