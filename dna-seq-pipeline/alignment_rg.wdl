@@ -88,7 +88,15 @@ workflow alignment {
     call copy as copy_alignment {
         input:
             destination = destination,
-            files = if (use_gencore) then [sambamba_sort_output.bam, sambamba_sort_output.bai, gencore.html, gencore.json] else [sambamba_markdup.bam, sambamba_markdup.bai, sambamba_markdup.flagstat]
+            files = if (use_gencore) 
+            then [select_first([sambamba_sort_output.bam, get_rg.e]),
+                  select_first([sambamba_sort_output.bai, get_rg.e]),
+                  select_first([gencore.html, get_rg.e]),
+                  select_first([gencore.json, get_rg.e]),
+                  select_first([sambamba_sort.flagstat, get_rg.e])] 
+            else [select_first([sambamba_markdup.bam, get_rg.e]), 
+                  select_first([sambamba_markdup.bai, get_rg.e]), 
+                  select_first([sambamba_markdup.flagstat, get_rg.e])]
             
     }
 
@@ -96,7 +104,7 @@ workflow alignment {
     output {
        File bam =  copy_alignment.out[0]
        File bai = copy_alignment.out[1]
-       Array[File?] all = copy_alignment.out
+       Array[File] all = copy_alignment.out
     }
 }
 
@@ -112,6 +120,7 @@ task get_rg {
     }
 
     command {
+        touch error.txt
         if [ "${rg_use_source}" != 'true' ]; then
           echo ~{"@RG\\\\\\\\tID:" + ID + "\\\\\\\\tLB:" + LB + "\\\\\\\\tPL:" + PL + "\\\\\\\\tPU:" + PU + "\\\\\\\\tSM:" + SM}
         else
@@ -125,6 +134,7 @@ task get_rg {
     }
 
     output {
+      File e = "error.txt" #terrible hack
       String rg = read_string(stdout())
     }
 }
@@ -205,6 +215,7 @@ task sambamba_sort{
     command {
        ln -s ~{unsorted_bam} ~{basename(unsorted_bam)}
        sambamba sort -m ~{gb_per_thread}G -t ~{threads} -l ~{compression} -p ~{basename(unsorted_bam)}
+       sambamba flagstat -t ~{threads} -p ~{name + ".sorted.bam"} > ~{name + ".sorted.bam.flagstat"}
     }
 
     runtime {
@@ -218,6 +229,7 @@ task sambamba_sort{
     output {
       File bam = name + ".sorted.bam"
       File bai = name + ".sorted.bam.bai"
+      File flagstat = name + ".sorted.bam.flagstat"
     }
 }
 
@@ -254,7 +266,7 @@ task gencore {
 
 task copy {
     input {
-        Array[File?] files
+        Array[File] files
         String destination
     }
 
