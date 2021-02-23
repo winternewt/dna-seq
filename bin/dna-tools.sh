@@ -22,6 +22,12 @@ if ! [ -d "/data/sources/kent" ]; then
 	cd -
 fi
 
+if ! [ -f "/usr/local/bin/sambamba" ]; then
+	mkdir -p /data/sources/sambamba
+	wget -qO- https://github.com/biod/sambamba/releases/download/v0.8.0/sambamba-0.8.0-linux-amd64-static.gz | zcat > /usr/local/bin/sambamba
+	chmod a+x /usr/local/bin/sambamba
+fi
+sambamba --version
 
 if ! [ -f "/usr/local/bin/samtools" ]; then
 	mkdir -p /data/sources/samtools
@@ -32,6 +38,7 @@ if ! [ -f "/usr/local/bin/samtools" ]; then
 	cd -
 fi
 samtools --version
+
 if ! [ -f "/usr/local/bin/bcftools" ]; then
 	mkdir -p /data/sources/bcftools
 	cd /data/sources/bcftools
